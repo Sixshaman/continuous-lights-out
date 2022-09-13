@@ -8,8 +8,10 @@
         <script src="js/contlo.js"></script>
     </head>
     <body>
+        <img id="BoardImage" src="board.png" onload="onBoardLoaded();" hidden />
+        <img id="ClickRuleImage" src="clickrule.png" onload="onClickRuleLoaded();" hidden />
         <canvas id="CanvasBoard">Continuous Lights Out</canvas>
-        <canvas id="CanvasClickRule">Continuous Lights Out</canvas>
+        <canvas id="CanvasClickRule" hidden>Continuous Lights Out</canvas>
         <script>main();</script>
     </body>
 </html>

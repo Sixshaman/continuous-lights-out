@@ -1,36 +1,36 @@
-function main() 
+function onBoardLoaded()
 {
-    const boardSize       = 512;
-    const clickRuleSize   = 64;
-    const clickRuleRadius = clickRuleSize / 2;
-
-    let canvasBoard    = document.getElementById("CanvasBoard");
-    canvasBoard.width  = boardSize;
-    canvasBoard.height = boardSize;
+    let board        = document.getElementById("BoardImage");
+    let canvasBoard  = document.getElementById("CanvasBoard");
 
     let contextBoard = canvasBoard.getContext("2d");
 
-    let board = new Image();
-    board.src = 'board.png';
-    board.onload = function() 
-    {
-        contextBoard.drawImage(this, 0, 0);
-    }
+    canvasBoard.width  = board.width;
+    canvasBoard.height = board.height;
+    
+    contextBoard.drawImage(board, 0, 0);
+}
 
-    let canvasClickRule    = document.getElementById("CanvasClickRule");
-    canvasClickRule.width  = clickRuleSize;
-    canvasClickRule.height = clickRuleSize;
+function onClickRuleLoaded()
+{
+    let clickRule       = document.getElementById("ClickRuleImage");
+    let canvasClickRule = document.getElementById("CanvasClickRule");
 
     let contextClickRule = canvasClickRule.getContext("2d");
 
-    let clickRule = new Image();
-    clickRule.src = 'clickrule.png';
-    clickRule.onload = function ()
-    {
-        contextClickRule.drawImage(this, 0, 0);
-    }
+    canvasClickRule.width  = clickRule.width;
+    canvasClickRule.height = clickRule.height;
 
-    canvasClickRule.hidden = true;
+    contextClickRule.drawImage(clickRule, 0, 0);
+}
+
+function main() 
+{
+    let canvasBoard  = document.getElementById("CanvasBoard");
+    let contextBoard = canvasBoard.getContext("2d");
+
+    let canvasClickRule  = document.getElementById("CanvasClickRule");
+    let contextClickRule = canvasClickRule.getContext("2d");
 
     canvasBoard.onclick = function(e)
     {
@@ -42,21 +42,24 @@ function main()
 
     function makeTurn(x, y)
     {
-        let boardLeftBound   = clickRuleRadius;
-        let boardTopBound    = clickRuleRadius;
-        let boardRightBound  = boardSize - clickRuleRadius;
-        let boardBottomBound = boardSize - clickRuleRadius;
+        const clickRuleHalfWidth  = canvasClickRule.width  / 2;
+        const clickRuleHalfHeight = canvasClickRule.height / 2;
 
-        let clickRuleLeftBound   = x < boardLeftBound   ?              clickRuleRadius - x  : 0;
-        let clickRuleRightBound  = x > boardRightBound  ? boardSize + (clickRuleRadius - x) : clickRuleSize - 1;
-        let clickRuleTopBound    = y < boardTopBound    ?              clickRuleRadius - y  : 0;
-        let clickRuleBottomBound = y > boardBottomBound ? boardSize + (clickRuleRadius - y) : clickRuleSize - 1;
+        const boardLeftBound   = clickRuleHalfWidth;
+        const boardTopBound    = clickRuleHalfHeight;
+        const boardRightBound  = canvasBoard.width  - clickRuleHalfWidth;
+        const boardBottomBound = canvasBoard.height - clickRuleHalfHeight;
+        
+        const clickRuleLeftBound   = x < boardLeftBound   ?                       clickRuleHalfWidth  - x  : 0;
+        const clickRuleRightBound  = x > boardRightBound  ? canvasBoard.width  + (clickRuleHalfWidth  - x) : canvasClickRule.width - 1;
+        const clickRuleTopBound    = y < boardTopBound    ?                       clickRuleHalfHeight - y  : 0;
+        const clickRuleBottomBound = y > boardBottomBound ? canvasBoard.height + (clickRuleHalfHeight - y) : canvasClickRule.height - 1;
+        
+        const clickRuleCorrectedWidth  = clickRuleRightBound  - clickRuleLeftBound;
+        const clickRuleCorrectedHeight = clickRuleBottomBound - clickRuleTopBound; 
 
-        let clickRuleCorrectedWidth  = clickRuleRightBound  - clickRuleLeftBound;
-        let clickRuleCorrectedHeight = clickRuleBottomBound - clickRuleTopBound; 
-
-        let boardLeft = x + (clickRuleLeftBound - clickRuleRadius);
-        let boardTop  = y + (clickRuleTopBound  - clickRuleRadius);
+        const boardLeft = x + (clickRuleLeftBound - clickRuleHalfWidth);
+        const boardTop  = y + (clickRuleTopBound  - clickRuleHalfHeight);
 
         let boardRect     = contextBoard.getImageData(boardLeft, boardTop, clickRuleCorrectedWidth, clickRuleCorrectedHeight);
         let clickRuleRect = contextClickRule.getImageData(clickRuleLeftBound, clickRuleTopBound, clickRuleCorrectedWidth, clickRuleCorrectedHeight);
